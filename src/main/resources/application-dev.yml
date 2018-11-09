@@ -1,0 +1,41 @@
+
+#添加thymeleaf配置
+spring:
+  thymeleaf:
+    cache: false
+    servlet:
+      content-type: text/html
+    enabled: true
+    encoding: utf-8
+    mode: HTML
+    prefix: classpath:/templetes/
+    suffix: .html
+  datasource:
+    username: root
+    password: 1234!@#$qwerQWER
+    url: jdbc:mysql://119.29.115.175:3306/test?useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: 119.29.115.175
+    port: 6379
+    password: foobared
+    jedis:
+      pool:
+        max-idle: 10
+        max-active: 10
+        max-wait: 5000
+    timeout: 5000 #先这样配虽然报错，但是能用
+
+
+
+#mybatis
+mybatis:
+  type-aliases-package: com.walle.springdemo.bean
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 3000
+    config-locations: classpath:mybatis/mybatis-config.xml
+    mapperLocations: classpath:mapper/*.xml
+
+#redis
