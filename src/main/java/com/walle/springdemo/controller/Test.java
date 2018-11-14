@@ -1,11 +1,11 @@
 package com.walle.springdemo.controller;
 
 import com.walle.springdemo.bean.User;
-import com.walle.springdemo.bean.User1;
 import com.walle.springdemo.redis.RedisService;
 import com.walle.springdemo.redis.UserKey;
 import com.walle.springdemo.result.Result;
 import com.walle.springdemo.service.UserService;
+import com.walle.springdemo.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +25,8 @@ public class Test {
 
     @RequestMapping("/getUser")
     @ResponseBody
-    public User1 getUser() {
-        User1 user = new User1();
+    public User getUser() {
+        User user = new User();
         user.setName("zhangsan");
         user.setPassword("fuck");
         user.setAge(20);
@@ -37,7 +37,7 @@ public class Test {
     @RequestMapping("/thymeleaf")
     public String hello(Model model) {
         model.addAttribute("name", "thymeleaf");
-        return "hello";
+        return "index";
     }
 
     @RequestMapping("/db")
@@ -50,8 +50,13 @@ public class Test {
     @RequestMapping("/insert")
     @ResponseBody
     public Result<Integer> xx(Model model) {
-
-        int code = userService.insert(null);
+        User user = new User();
+        user.setId(10010);
+        user.setName("admin");
+        String salt = MD5Util.createSalt();
+        user.setPassword(MD5Util.inputPassToDbPass("123", salt));
+        user.setSalt(salt);
+        int code = userService.insertUser(user);
         return Result.success(code);
     }
 

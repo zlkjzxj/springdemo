@@ -1,5 +1,5 @@
 
-#使用模式
+#浣跨敤妯″紡
 spring:
   profiles:
     active: dev

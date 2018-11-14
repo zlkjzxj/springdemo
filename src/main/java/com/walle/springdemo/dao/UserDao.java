@@ -11,12 +11,15 @@ import java.util.List;
 @Mapper
 public interface UserDao {
     @Select("select * from user")
-    public List<User> getGirls();
+    public List<User> getUsers();
 
     @Select("select * from user where id = #{id}")
-    public User getGirlById(@PathVariable("id") int id);
+    public User getUserById(@PathVariable("id") int id);
 
-    @Insert("insert into user (id,name) values (#{id},#{name})")
+    @Select("select * from user where name = #{name}")
+    public User getUserByName(@PathVariable("name") String name);
+
+    @Insert("insert into user (id,name,salt,password) values (#{id},#{name},#{salt},#{password})")
     public int insert(User user);
 }
 

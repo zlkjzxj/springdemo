@@ -1,6 +1,5 @@
 package com.walle.springdemo.shiro;
 
-import com.walle.springdemo.bean.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.mgt.DefaultSecurityManager;
@@ -10,7 +9,6 @@ import org.apache.shiro.util.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class AuthenticationTest {

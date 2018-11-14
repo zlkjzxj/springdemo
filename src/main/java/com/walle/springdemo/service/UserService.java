@@ -14,11 +14,19 @@ public class UserService {
     private UserDao userDao;
 
     public List<User> getUsers() {
-        return userDao.getGirls();
+        return userDao.getUsers();
     }
 
     public User getUserById(int id) {
-        return userDao.getGirlById(id);
+        return userDao.getUserById(id);
+    }
+
+    public User getUserByName(String name) {
+        return userDao.getUserByName(name);
+    }
+
+    public int insertUser(User user) {
+        return userDao.insert(user);
     }
 
     @Transactional

@@ -25,6 +25,8 @@ spring:
         max-active: 10
         max-wait: 5000
     timeout: 5000 #先这样配虽然报错，但是能用
+  resources:
+    static-locations: classpath:/static/
 
 
 
