@@ -79,7 +79,7 @@ public class Test {
         User user = new User();
         user.setId(1);
         user.setName("shit");
-        boolean b = redisService.set(UserKey.getById, "" + 1, user);
+//        boolean b = redisService.set(UserKey.getById, "" + 1, user);
         return Result.success(true);
     }
 }

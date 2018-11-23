@@ -1,0 +1,3 @@
+1.项目添加thymeleaf之后就没有了tomcat的jsession 了，因为它只是一个模板引擎，提供展示功能，不存在会话的东西。
+2.知道vo怎么用
+3.id不要自增，很容易被遍历，使用snowflake

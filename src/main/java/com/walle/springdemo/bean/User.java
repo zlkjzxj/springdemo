@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Date;
 
 public class User {
-    private int id;
+    private long id;
     private String name;
     @JsonIgnore  // ignore this ,json don't out it
     private String password;
@@ -29,11 +29,11 @@ public class User {
         this.password = password;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

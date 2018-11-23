@@ -8,7 +8,7 @@ spring:
     enabled: true
     encoding: utf-8
     mode: HTML
-    prefix: classpath:/templetes/
+    prefix: classpath:/templates/
     suffix: .html
   datasource:
     username: root
@@ -21,9 +21,9 @@ spring:
     password: foobared
     jedis:
       pool:
-        max-idle: 10
-        max-active: 10
-        max-wait: 5000
+        max-idle: 100
+        max-active: 100
+        max-wait: 1000
     timeout: 5000 #先这样配虽然报错，但是能用
   resources:
     static-locations: classpath:/static/
@@ -39,5 +39,6 @@ mybatis:
     default-statement-timeout: 3000
     config-locations: classpath:mybatis/mybatis-config.xml
     mapperLocations: classpath:mapper/*.xml
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 #redis

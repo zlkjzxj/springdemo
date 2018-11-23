@@ -16,7 +16,7 @@ public abstract class BasePrefix implements KeyPrefix {
 
     @Override
     public int expireSeconds() {//默认-1代表永不过期
-        return -1;
+        return this.expireSeconds;
     }
 
     @Override
