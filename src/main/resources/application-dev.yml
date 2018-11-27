@@ -27,8 +27,27 @@ spring:
     timeout: 5000 #先这样配虽然报错，但是能用
   resources:
     static-locations: classpath:/static/
-
-
+#rabbitmq
+  rabbitmq:
+    host: 192.168.20.110
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /    #可以虚拟出许多个服务
+    listener:
+      simple:
+        concurrency: 10  #消费者的数量
+        max-concurrency: 10
+        prefetch: 1  #每次从队列取个数
+        auto-startup: true #默认消费者自动启动
+        default-requeue-rejected: true #消费失败数据重新加入到队列中来
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 1000
+        multiplier: 1.0
 
 #mybatis
 mybatis:
@@ -41,4 +60,5 @@ mybatis:
     mapperLocations: classpath:mapper/*.xml
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
-#redis
+
+

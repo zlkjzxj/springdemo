@@ -1,6 +1,7 @@
 package com.walle.springdemo.controller;
 
 import com.walle.springdemo.bean.User;
+import com.walle.springdemo.rabbitmq.MqSender;
 import com.walle.springdemo.redis.RedisService;
 import com.walle.springdemo.redis.UserKey;
 import com.walle.springdemo.result.Result;
@@ -22,6 +23,8 @@ public class Test {
     private UserService userService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private MqSender sender;
 
     @RequestMapping("/getUser")
     @ResponseBody
@@ -82,4 +85,36 @@ public class Test {
 //        boolean b = redisService.set(UserKey.getById, "" + 1, user);
         return Result.success(true);
     }
+
+    @RequestMapping("/mq/queue")
+    @ResponseBody
+    public Result<User> mqTest() {
+        User user = new User();
+        user.setName("fuck");
+        user.setAge(11);
+        sender.send(user);
+        return Result.success(user);
+    }
+
+    @RequestMapping("/mq/topic")
+    @ResponseBody
+    public Result<String> mqTopic() {
+        sender.sendTopic("holly shit");
+        return Result.success("holly shit");
+    }
+
+    @RequestMapping("/mq/fanout")
+    @ResponseBody
+    public Result<String> mqFanout() {
+        sender.sendFanout("holly shit");
+        return Result.success("holly shit");
+    }
+
+    @RequestMapping("/mq/header")
+    @ResponseBody
+    public Result<String> mqHeader() {
+        sender.sendHeader("holly shit");
+        return Result.success("holly shit");
+    }
+
 }
