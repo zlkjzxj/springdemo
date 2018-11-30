@@ -29,7 +29,7 @@ spring:
     static-locations: classpath:/static/
 #rabbitmq
   rabbitmq:
-    host: 192.168.20.110
+    host: 119.29.115.175
     port: 5672
     username: admin
     password: admin

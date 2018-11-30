@@ -1,26 +1,29 @@
 package com.walle.springdemo.controller;
 
 import com.walle.springdemo.bean.MiaoshaOrder;
-import com.walle.springdemo.bean.OrderInfo;
 import com.walle.springdemo.bean.User;
+import com.walle.springdemo.rabbitmq.MiaoshaMsg;
+import com.walle.springdemo.rabbitmq.MqSender;
 import com.walle.springdemo.redis.GoodsKey;
 import com.walle.springdemo.redis.RedisService;
 import com.walle.springdemo.result.CodeMsg;
+import com.walle.springdemo.result.Result;
 import com.walle.springdemo.service.GoodsService;
 import com.walle.springdemo.service.MiaoshaService;
 import com.walle.springdemo.service.OrderService;
 import com.walle.springdemo.vo.GoodsVo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/miaosha")
@@ -38,6 +41,11 @@ public class MiaoshaController implements InitializingBean {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private MqSender mqSender;
+
+    private Map<Long, Boolean> localOverMap = new HashMap<>();
+
     /**
      * 实现序列化后的方法
      * 用来初始化
@@ -53,18 +61,39 @@ public class MiaoshaController implements InitializingBean {
         }
         for (GoodsVo goods : list) {
             redisService.set(GoodsKey.getMiaoshaGoodsStock, "" + goods.getId(), goods.getStockCount());
+            localOverMap.put(goods.getId(), false);
         }
     }
 
     @RequestMapping("/do_miaosha")
-    public String doMiaosha(HttpServletResponse response, Model model, User user, @RequestParam("goodsId") long goodsId) {
+    public Result<Integer> doMiaosha(HttpServletResponse response, Model model, User user, @RequestParam("goodsId") long goodsId) {
         //判断用户是否登录，如果没有登录跳转到登录
         if (user == null) {
-            return "login";
+            return Result.error(CodeMsg.SESSION_ERROR);
         }
-//        long stock = redisService.(GoodsKey.getMiaoshaGoodsStock,""+goodsId)
+        //利用内存标记来减少redis访问 假如商品有10个，过了10个之后就不在去执行下面的程序了
+        boolean over = localOverMap.get(goodsId);
+        if (over) {
+            return Result.error(CodeMsg.MISAOSHA_OVER);
+        }
+        //预减库存
+        long stock = redisService.decr(GoodsKey.getMiaoshaGoodsStock, "" + goodsId);
+        if (stock < 0) {
+            localOverMap.put(goodsId, true);
+            return Result.error(CodeMsg.MISAOSHA_OVER);
+        }
+        //判断是否已经秒杀到了
+        MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
+        if (order != null) {
+            return Result.error(CodeMsg.MISAOSHA_REPEAT);
+        }
+        MiaoshaMsg msg = new MiaoshaMsg();
+        msg.setUser(user);
+        msg.setGoodsId(goodsId);
+        mqSender.sendMiaoshaMsg(msg);
+
         /**
-         * 优化之前的写法
+         * 优化前的写法
          */
         /*//判断库存
         GoodsVo goodsVo = goodsService.getGoodsVo(goodsId);
@@ -83,7 +112,26 @@ public class MiaoshaController implements InitializingBean {
         model.addAttribute("orderInfo", orderInfo);
         model.addAttribute("goods", goodsVo);
         return "order_detail";*/
-        return "";
+        return Result.success(0);//排队中。。。
     }
 
+    /**
+     * 秒杀成功返回订单id
+     * -1： 库存不足 返回
+     * 0：还没处理完，排队中
+     *
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/result", method = RequestMethod.GET)
+    public Result<Integer> getMiaoshaResult(Model model, User user, @RequestParam("goodsId") long goodsId) {
+        //判断用户是否登录，如果没有登录跳转到登录
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        long orderId = miaoshaService.getResult(user.getId(), goodsId);
+        return Result.success(0);
+    }
 }

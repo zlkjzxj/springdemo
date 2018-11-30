@@ -18,6 +18,9 @@ public class MqSender {
     @Autowired
     AmqpTemplate amqpTemplate;
 
+    /*
+     *演示代码开始
+     * */
     public void send(Object message) {
         String msg = JSONObject.toJSONString(message);
         logger.info("send message:" + msg);
@@ -45,5 +48,13 @@ public class MqSender {
         properties.setHeader("header2", "value2");
         Message message1 = new Message(msg.getBytes(), properties);
         amqpTemplate.convertAndSend(HEADERS_EXCHANGE, "", message1);
+    }
+
+    /*
+     *演示代码结束
+     * */
+
+    public void sendMiaoshaMsg(MiaoshaMsg msg) {
+        amqpTemplate.convertAndSend(MIAOSHA_QUEUE, msg);
     }
 }

@@ -1,21 +1,14 @@
 package com.walle.springdemo.controller;
 
-import com.walle.springdemo.bean.User;
 import com.walle.springdemo.redis.RedisService;
-import com.walle.springdemo.redis.UserKey;
-import com.walle.springdemo.result.CodeMsg;
 import com.walle.springdemo.result.Result;
 import com.walle.springdemo.service.UserService;
-import com.walle.springdemo.utils.MD5Util;
-import com.walle.springdemo.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
@@ -33,6 +26,7 @@ public class LoginController {
 
     /**
      * 用户登录，传过来用户名和密码，密码是经过MD5加密的
+     *
      * @param response
      * @param name
      * @param password

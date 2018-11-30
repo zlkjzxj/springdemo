@@ -10,6 +10,7 @@ public class CodeMsg {
     public static CodeMsg USERNOTEXIST_ERROR = new CodeMsg(500101, "用户不存在");
     public static CodeMsg PASSWORD_ERROR = new CodeMsg(500102, "密码错误");
     public static CodeMsg BIND_ERROR = new CodeMsg(500103, "参数校验异常：%s");
+    public static CodeMsg SESSION_ERROR = new CodeMsg(500104, "session过期");
 
     // 登录模块
 

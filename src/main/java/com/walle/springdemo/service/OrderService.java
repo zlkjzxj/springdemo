@@ -24,6 +24,7 @@ public class OrderService {
 
     /**
      * 同时生成秒杀订单
+     *
      * @param user
      * @param goodsVo
      * @return
@@ -39,7 +40,7 @@ public class OrderService {
         orderInfo.getOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        long orderId = orderDao.insert(orderInfo);
+        orderDao.insert(orderInfo);
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goodsVo.getId());
         miaoshaOrder.setOrderId(orderInfo.getId());//用orderId不对

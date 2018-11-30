@@ -64,15 +64,52 @@ public class RedisService {
      *
      * @param prefix
      * @param key
-     * @param value
      * @param <T>
      * @return
      */
-    public <T> boolean isExists(KeyPrefix prefix, String key, T value) {
+    public <T> boolean isExists(KeyPrefix prefix, String key) {
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             return jedis.exists(prefix.getPrefix() + key);
+        } finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * 增加一个值
+     *
+     * @param prefix
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public <T> long incr(KeyPrefix prefix, String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.incr(prefix.getPrefix() + key);
+        } finally {
+            returnToPool(jedis);
+        }
+
+    }
+
+    /**
+     * 减少一个值
+     *
+     * @param prefix
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public <T> long decr(KeyPrefix prefix, String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.decr(prefix.getPrefix() + key);
         } finally {
             returnToPool(jedis);
         }

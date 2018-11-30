@@ -21,6 +21,8 @@ public class MqConfig {
     public static final String FANOUT_EXCHANGE = "fanoutExchange";
     public static final String HEADERS_EXCHANGE = "headersExchange";
     public static final String HEADER_QUEUE = "header";
+    public static final String MIAOSHA_QUEUE = "miaoshaQueue";
+
     /*public static final String ROUTING_KEY1 = "topic.key1";
     public static final String ROUTING_KEY2 = "topic.#";//*代表一个单词，#代表0个或多个*/
 
@@ -99,5 +101,10 @@ public class MqConfig {
         map.put("header1", "value1");
         map.put("header2", "value2");
         return BindingBuilder.bind(headerQueue()).to(headersExchange()).whereAll(map).match();
+    }
+
+    @Bean
+    public Queue miaoshaQueue() {
+        return new Queue(MIAOSHA_QUEUE, true);//durable 是否持久化
     }
 }
